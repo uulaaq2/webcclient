@@ -1,6 +1,4 @@
-import { IsoTwoTone } from '@mui/icons-material';
 import config from 'config'
-
 
 function pageInitial(pageInfo) {  
   const pages = pageInfo.pageName.split('.')

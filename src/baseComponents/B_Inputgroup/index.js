@@ -12,19 +12,20 @@ const Inputgroup = ({
     inputRef = null,
   }) => {
 
-  let className = style.inputgroupWrapper
-  if (errorText) {
-    className += ' errored'
-  }
-
-  console.log(className)
+  const errored = errorText ? 'errored' : ''
 
   return (
-    <div className={className}>
-        <label className={style.formLabel} htmlFor={id}>{label}</label>
-        <input className={`form-control ${style.formInput}`} type={type} id={id} ref={inputRef} autoComplete={autocomplete} />
-        {errorText && (<B_Inputwarning variant='danger'>{errorText}</B_Inputwarning>)}
-    </div>
+    
+        <div className={`form-group ${errored}`}>
+          <div className='form-group-header'>
+            <label htmlFor={id} className='text-normal'>{label}</label>
+          </div>
+          <div className='form-group-body'>
+            <input className={`form-control color-bg-default`} type={type} id={id} ref={inputRef} autoComplete={autocomplete} />
+            {errorText && (<div className='mt-1'><B_Inputwarning variant='danger'>{errorText}</B_Inputwarning></div>)}
+          </div>
+        </div>
+    
   );
 };
 
