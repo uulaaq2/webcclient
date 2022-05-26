@@ -1,0 +1,20 @@
+.inputgroupWrapper {
+  display: grid;
+  gap: 0.3rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.formLabel {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  font-weight: normal;
+}
+
+.formInput {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  font-weight: normal;
+}

@@ -1,0 +1,49 @@
+.page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 2.5rem;
+}
+
+.logo {
+  display: block;
+  max-width: 100%;
+  width: 100px;
+  margin-bottom: 1.2rem;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.2rem;
+}
+
+.outerWrapper {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.outerWrapper {
+  background: #f6f8fa;
+  border: 1px solid rgb(216, 222, 228);
+  padding: 1rem;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 340px;
+  display: grid;
+  gap: 1rem;
+}
+
+.formContent {
+  display: grid;
+  gap: 0.7rem;
+}
+
+
+.formLabel {
+  font-size: 0.8rem;
+  margin-bottom: -0.5rem;
+}
