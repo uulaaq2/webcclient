@@ -9,6 +9,7 @@ import PrivateRoute from 'components/PrivateRoute'
 
 import Home from 'pages/public/home'
 import SignIn from 'pages/signIn'
+import ChangePassword from 'pages/public/changePassword'
 
 const App = () => {
  
@@ -16,8 +17,9 @@ const App = () => {
       <Router>
 
         <Routes>        
-            <Route exact path="/" element={<Home />} />        
+            <Route exact path="/" element={<Home />} />                    
             <Route exact path="/signin" element={<SignIn />} />                    
+            <Route path="/me/changepassword/:token" element={<ChangePassword />} />     
             
         </Routes>
 

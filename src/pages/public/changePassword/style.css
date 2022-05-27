@@ -1,39 +1,19 @@
-.wrapper {
+.page {
   width: 100vw;
-  max-width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.box {
-  padding: 1rem 2rem 1rem 2rem;
-  width: 100vw;
-  max-width: 410px;
+  flex-direction: column;
+  padding-top: 3rem;
 }
 
 .logo {
-  max-width: 120px;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+  display: block;
+  max-width: 100%;
+  width: 100px;
+  margin-bottom: 1rem;
 }
 
 .title {
-  margin-bottom: 1.5rem;
-}
-
-.boxContent {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  margin-bottom: 1.5rem;
-}
-
-.boxFooter {
-
-}
-
-.errorBox {
-  margin-top: 1rem;
+  margin-bottom: 1.2rem;
 }

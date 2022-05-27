@@ -1,4 +1,4 @@
-const apiServer = 'http://localhost:3002'
+const apiServer = 'http://AUBOTD9X94HD2:3002'
 
 module.exports = {
     showClientDevelopmentErros: true,

@@ -1,0 +1,14 @@
+.checkboxWrapper {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+}
+
+.labelWrapper {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: normal;
+}

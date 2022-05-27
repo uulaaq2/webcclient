@@ -1,18 +1,15 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import logo from 'images/logo.png'
 import config from 'config'
 import pageInitial from 'functions/pageInitial'
-import moduleStyle from 'pages/public/changePassword/style.css'
+import style from './style.css'
 import { validateInputFields } from 'functions/validateInputFields'
-import FormError from 'baseComponents/Alerts/FormError'
-import InputGroup from 'baseComponents/InputGroup'
-
-import { useNavigate } from 'react-router-dom'
-import { Grid, Paper, Box, Stack, Button, CircularProgress, Typography, Grow } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
-import { CheckCircleOutline } from '@mui/icons-material'
+import B_Button from 'baseComponents/Base_Button'
+import B_Formerror from 'baseComponents/Base_Formerror'
+import B_Inputgroup from 'baseComponents/Base_Inputgroup'
 
 const getToken = (token) => token.substring(0, token.length - 2)
 const getShowCurrentPassword = (token) => token.charAt(token.length - 2) === '1' ? true : false
@@ -20,26 +17,27 @@ const getRedirectToUsersHomePage = (token) => token.charAt(token.length - 1) ===
 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
-import { Password } from '@mui/icons-material'
+import useGetUserInfo from 'functions/user/useGetUserInfo'
 
 const ChangePassword = () => {
   pageInitial( {pageName: 'user.changePassword'} )
+  
+  const { token } = useParams()
+  const navigate = useNavigate()  
 
   const globalServices = useContext(GlobalStateContext)  
   const { send } = globalServices.authService
   const [ state  ] = useActor(globalServices.authService)  
   const [showPasswordIsChanged, setShowPasswordIsChanged] = useState(false)
-
-  const { token } = useParams()
-  const navigate = useNavigate()
-  
+ 
   const currentPasswordRef = useRef()
   const newPasswordRef = useRef()
   const confirmNewPasswordRef = useRef()  
   
   const [erroredInputs, setErroredInputs] = useState([])  
   const [inputs] = useState({
-    currentPassword: {      
+    currentPassword: {    
+      id: 'currentPassword',
       label: 'Current password',
       type: 'password',
       errorText: '',
@@ -48,6 +46,7 @@ const ChangePassword = () => {
       validate: getShowCurrentPassword(token)
     },    
     newPassword: {      
+      id: 'newPassword',
       label: 'New password',
       type: 'password',
       errorText: '',
@@ -56,6 +55,7 @@ const ChangePassword = () => {
       validate: true
     },
     confirmNewPassword: {
+      id: 'confirmNewPassword',
       label: 'Confirm new password',
       type: 'password',
       errorText: '',
@@ -105,62 +105,34 @@ const ChangePassword = () => {
       })    
       
     } catch (error) {
-      console.log(error)
     }
   }
-
   return (
     <>
-      <Grid className={moduleStyle.wrapper}>
-        <Paper className={moduleStyle.box} elevation={0}>
-          <Box>
-            <img src={logo} alt={config.app.corporateTitle} className={moduleStyle.logo} />
-          </Box>
+      <div className={style.page}>
+          <img src={logo} className={style.logo} />
+          {!showPasswordIsChanged && <h1 className="f2-light mb-4">Change your password</h1> }
+          
+          { !showPasswordIsChanged &&
+            <form className='color-bg-inset p-3 border rounded-3'>
+              <div className='mb-4'>
+                { getShowCurrentPassword(token) && 
+                  <B_Inputgroup id={inputs.currentPassword.id} type={inputs.currentPassword.type} label={inputs.currentPassword.label} autocomplete="none" errorText={inputs.currentPassword.errorText} inputRef={currentPasswordRef}></B_Inputgroup>
+                }
+                <B_Inputgroup id={inputs.newPassword.id} type={inputs.newPassword.type} label={inputs.newPassword.label} autocomplete="none" errorText={inputs.newPassword.errorText} inputRef={newPasswordRef}></B_Inputgroup>              
+                <B_Inputgroup id={inputs.confirmNewPassword.id} type={inputs.confirmNewPassword.type} label={inputs.confirmNewPassword.label} autocomplete="none" errorText={inputs.confirmNewPassword.errorText} inputRef={confirmNewPasswordRef}></B_Inputgroup>                            
+              </div>
+                <B_Button variant='primary' loading={state.context.inProgress} className='btn-block' onClick={handleChangePassword}>Save</B_Button>
 
-          { !showPasswordIsChanged ? 
-              <>
-                <Box className={moduleStyle.title}>
-                  <Typography variant='h5'>Change your password</Typography>
-                </Box>
-
-                <Box className={moduleStyle.boxContent}>
-                  { getShowCurrentPassword(token) 
-                    ? 
-                      <InputGroup label={inputs.currentPassword.label} type={inputs.currentPassword.type} inputRef={currentPasswordRef} errorText={inputs.currentPassword.errorText} fullWidth />
-                    :
-                      ''
-                  }
-                  <InputGroup label={inputs.newPassword.label} type={inputs.newPassword.type} inputRef={newPasswordRef} errorText={inputs.newPassword.errorText} fullWidth />
-                  <InputGroup label={inputs.confirmNewPassword.label} type={inputs.confirmNewPassword.type} inputRef={confirmNewPasswordRef} errorText={inputs.confirmNewPassword.errorText} fullWidth />
-                </Box>
-                <Box className={moduleStyle.boxfooter}>
-                  <LoadingButton 
-                    variant='contained' 
-                    onClick={handleChangePassword} 
-                    fullWidth 
-                    disabled={state.inProgress}
-                    loading={state.inProgress}
-                    endIcon={<></>} 
-                    loadingPosition='end' 
-                  >
-                    Change password
-                  </LoadingButton>
-                </Box>
-                <Box className={moduleStyle.errorBox}>
-                  { (state.context.userInfo.status === 'accountIsExpired' || state.context.userInfo.status === 'warning' || state.context.userInfo.status === 'error')
-                      ? 
-                        <FormError message={state.context.userInfo.message} />
-                      :
-                        ''
-                  }
-                </Box>
-              </>
-            :
-              <PasswordIsChanged countDownFrom={10} redirectTo={config.urls.home} />      
+                { (state.context.userInfo.status === 'accountIsExpired' || state.context.userInfo.status === 'warning' || state.context.userInfo.status === 'error') &&
+                  <>
+                    <B_Formerror message={state.context.userInfo.message} />
+                  </>
+                }
+            </form>
           }
-
-        </Paper>
-      </Grid>
+          { showPasswordIsChanged && <PasswordIsChanged countDownFrom={10} redirectTo={config.urls.home} />}
+      </div>
     </>
   );
 }
@@ -192,21 +164,13 @@ const PasswordIsChanged = ({ countDownFrom, redirectTo }) => {
   }
   
   return (
-    <Typography component="div">
-      <Box sx={{ width: '100%'}}>
-        <Grow in={true}>
-          <Stack spacing={5} alignItems="center" justifyContent="center" style={{padding: "2rem"}}>
-            <CheckCircleOutline color="success" style={{fontSize: "3rem"}} />
-            <Box sx={{ fontSize: 'h5.fontSize', m: 1 }}>
-              New password is set
-            </Box>
-            <Button variant='contained' onClick={handleRedirect}>
-              {`Go to ${redirectTo.name} ${counter}`}
-            </Button>
-          </Stack>
-        </Grow>
-      </Box>
-    </Typography>
+    <div class="blankslate">
+      <img src="https://ghicons.github.com/assets/images/blue/png/Pull%20request.png" alt="" class="blankslate-image" />
+      <h3 class="blankslate-heading">Your new password has been set</h3>
+      <div class="blankslate-action">
+        <B_Button variant='primary' onClick={handleRedirect}>Go to {redirectTo.name} {counter} </B_Button>
+      </div>
+    </div>
   )
 }
 

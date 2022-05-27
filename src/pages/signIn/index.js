@@ -1,97 +1,36 @@
-import style from './style.css'
-import logo from 'images/logo.png'
 import React, {useContext, useState, useRef, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
-import B_Inputgroup from 'baseComponents/B_InputGroup'
-import B_Button from 'baseComponents/B_Button'
-import B_Checkbox from 'baseComponents/B_Checkbox'
-
+import B_Pageloading from 'baseComponents/Base_Pageloading'
 import config from 'config'
-import pageInitial from 'functions/pageInitial'
-import { validateInputFields } from 'functions/validateInputFields'
+import SignIn from 'pages/signin/SignIn'
+import useGetUserInfo from 'functions/user/useGetUserInfo'
 
-import { GlobalStateContext } from 'state/globalState'
-import { useActor } from '@xstate/react'
-
-const SignIn = () => {
-  pageInitial( {pageName: 'user.signIn'} )
-
-  const globalServices = useContext(GlobalStateContext)  
-//  const isLoggedIn = useSelector(globalServices.authService, loggedInSelector);
-  const { send } = globalServices.authService
-  const [ state  ] = useActor(globalServices.authService)  
-
-  const emailRef = useRef()
-  const passwordRef = useRef()
-  const rememberMeRef = useRef()  
+const index = () => {
+  const userInfo = useGetUserInfo()
   const navigate = useNavigate()
+    
+  useEffect(() => {
+    if (userInfo.success) {    
+      navigate(userInfo.user.Home_Page || config.urls.public.path)
+    } else {
+      if (userInfo.status === 'shouldChangePassword') {
+        const token = userInfo.token
+        const showCurrentPassword = '0'
+        const redirectToUsersHomePage = '1'
+        const url = config.urls.user.changePassword.path + '/' + token + showCurrentPassword + redirectToUsersHomePage
   
-  const [erroredInputs, setErroredInputs] = useState([])  
-  const [inputs] = useState({
-    email: {      
-      id: 'email',
-      label: 'Email or user name',
-      type: 'text',
-      errorText: '',
-      ref: emailRef,
-      required: true,
-      validate: true
-    },
-    password: {
-      id: 'password',
-      label: 'Password',
-      type: 'password',
-      errorText: '',
-      ref: passwordRef,
-      required: true,
-      validate: true
-    },
-    inputErors: 0,
-    setErroredInputs: setErroredInputs,
-  })  
-
-  useEffect(() => {    
-    inputs.email.ref.current.focus()
-  }, [])
-
-  useEffect(() => {    
-    if (erroredInputs[0]) {
-      erroredInputs[0].focus()
-    }
-  }, [erroredInputs])
-
-  async function handleSignin() {
-
-    const validateInputFieldsResult = validateInputFields(inputs)
-    if (validateInputFieldsResult.status === 'error') { 
-      throw new Error(validateInputFieldsResult.message) 
-    }
-    if (validateInputFieldsResult.status !== 'ok') return
-  
-    send('SIGN_IN', {    
-      requestType: 'signInWihCredentials',
-      email: emailRef.current.value, 
-      password: passwordRef.current.value, 
-      rememberMe: rememberMeRef.current.checked
-    })
-
-  }
+        navigate(url)
+      }
+    }    
+  }, [userInfo.completed])
 
   return (
     <>
-      <div className={style.page}>
-          <img src={logo} className={style.logo} />
-          <form className='color-bg-inset p-3 border rounded-3'>
-            <div className='mb-4'>
-              <B_Inputgroup id={inputs.email.id} type={inputs.email.type} label={inputs.email.label} autocomplete="none" errorText={inputs.email.errorText} inputRef={emailRef}></B_Inputgroup>
-              <B_Inputgroup id={inputs.password.id} type={inputs.password.type} label={inputs.password.label} errorText={inputs.password.errorText} inputRef={passwordRef}></B_Inputgroup>
-              <B_Checkbox label='Keep me signed in' inputRef={rememberMeRef}></B_Checkbox>
-            </div>
-              <B_Button variant='primary' loading={state.context.inProgress} className='btn-block' onClick={handleSignin} disabled={state.context.inProgress}>Sign in</B_Button>
-          </form>
-      </div>
+      { (!userInfo.appStarted) && <B_Pageloading/>}
+      { (!userInfo.success && userInfo.appStarted) && <SignIn/>}
     </>
-  );
+  )
+
 };
 
-export default SignIn
+export default index;

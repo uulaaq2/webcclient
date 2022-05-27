@@ -101,7 +101,6 @@ export const authMachine = createMachine({
     },
     
     success: {
-      entry: assign({ inProgress: false }),     
       always: {
         target: 'finished'
       }
@@ -114,30 +113,25 @@ export const authMachine = createMachine({
     },
 
     warning: {
-      entry: assign({ inProgress: false }),     
       always: {
         target: 'finished'
       }
     },
 
     error: {
-      entry: [
-        assign({ inProgress: false }), 
-      ],
       always: {
         target: 'finished'
       }
     },
 
     fail: {
-      entry: assign({ inProgress: false }),
       always: {        
         target: 'finished'
       }
     },    
 
     finished: {
-      entry: assign({ appStarted: true }),
+      entry: [assign({ inProgress: false}), assign({ appStarted: true })],
       on: {
         SIGN_IN: {
           target: 'gettingUserInfo',          
