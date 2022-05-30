@@ -13,6 +13,10 @@ export function getLocalStorage(key) {
   }
 }
 
+export function deleteLocalStorage(name) {
+  deleteCookie(name)
+}
+
 function setCookie(key, value, setExpirationTime) {
   try {        
     let expires = ''
@@ -63,4 +67,8 @@ function getCookie(key) {
   } catch (error) {
     return setError(error)
   }
+}
+
+function deleteCookie(name) {
+  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }

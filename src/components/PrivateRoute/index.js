@@ -1,35 +1,34 @@
-import React, { useEffect } from 'react'
+import React, {useContext, useState, useRef, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
-import useGetUserInfo from 'functions/user/useGetUserInfo'
+import B_Pageloading from 'baseComponents/Base_Pageloading'
 import config from 'config'
-//import PageLoading from 'components/PageLoading/index'
-//import AppNavBar from 'components/AppNavBar'
+import useGetUserInfo from 'functions/user/useGetUserInfo'
+import AppNavbar from 'components/AppNavbar'
 
 const index = ({ element }) => {
   const userInfo = useGetUserInfo()
   const navigate = useNavigate()
-
-  useEffect(() => {   
-    if (userInfo.completed && !userInfo.success) {
-      navigate(config.urls.public.path)
+    
+  useEffect(() => {
+    if (userInfo.completed) {
+      if (!userInfo.success) {    
+        navigate(config.urls.public.path)
+      }    
     }
   }, [userInfo.completed])
 
-  if (userInfo.inProgress) {
-    //return <PageLoading />
-  }
-
-  if (userInfo.completed === true) {      
-    if (userInfo.success) {
-      return (
+  return (
+    <>
+      { (userInfo.inProgress) && <B_Pageloading/>}
+      { (userInfo.success && !userInfo.inProgress && userInfo.appStarted) && 
         <>
-          //<AppNavBar />
+          <AppNavbar />
           { element }
-        </>
-      )
-    }
-  }  
+        </>   
+      }
+    </>
+  )
 
-}
+};
 
-export default index
+export default index;

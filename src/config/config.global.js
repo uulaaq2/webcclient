@@ -3,7 +3,7 @@ const apiServer = 'http://AUBOTD9X94HD2:3002'
 module.exports = {
     showClientDevelopmentErros: true,
     localStorageType: 'cookie',
-    localStorageExpiresIn: 14,
+    localStorageExpiresIn: 14,    
     app: {
         corporateTitle: 'Indorama Ventures Oxide Pty Ltd',
         name: 'IBOS'
@@ -21,6 +21,10 @@ module.exports = {
             signIn: {
                 path: '/signin',
                 name: 'Sign in'
+            },
+            signOut: {
+                path: '/signout',
+                name: 'Sign Out'
             },
             changePassword: {
                 path: '/me/changepassword',
@@ -49,7 +53,7 @@ module.exports = {
                 emailResetPasswordLink: apiServer + '/user/me/emailpasswordresetlink',
                 generateToken: apiServer + '/user/me/generatetoken',
                 verifyToken: apiServer + '/user/me/verifytoken',
-                userProfile: apiServer + '/users',
+                userProfile: apiServer + '/users'
             },
             getDrawings: apiServer + '/getdrawings',
             verifyToken: apiServer + '/verifytoken',

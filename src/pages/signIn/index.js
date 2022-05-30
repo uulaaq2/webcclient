@@ -10,18 +10,20 @@ const index = () => {
   const navigate = useNavigate()
     
   useEffect(() => {
-    if (userInfo.success) {    
-      navigate(userInfo.user.Home_Page || config.urls.public.path)
-    } else {
-      if (userInfo.status === 'shouldChangePassword') {
-        const token = userInfo.token
-        const showCurrentPassword = '0'
-        const redirectToUsersHomePage = '1'
-        const url = config.urls.user.changePassword.path + '/' + token + showCurrentPassword + redirectToUsersHomePage
-  
-        navigate(url)
-      }
-    }    
+    if (userInfo.completed) {
+      if (userInfo.success) {    
+        navigate(userInfo.user.Home_Page || config.urls.public.path)
+      } else {
+        if (userInfo.status === 'shouldChangePassword') {
+          const token = userInfo.token
+          const showCurrentPassword = '0'
+          const redirectToUsersHomePage = '1'
+          const url = config.urls.user.changePassword.path + '/' + token + showCurrentPassword + redirectToUsersHomePage
+    
+          navigate(url)
+        }
+      }    
+    }
   }, [userInfo.completed])
 
   return (

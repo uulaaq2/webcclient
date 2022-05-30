@@ -1,9 +1,9 @@
 import { createMachine, interpret, assign } from 'xstate'
 import getUserWithCredentials from 'functions/user/getUserWithCredentials'
 import getUserWithToken from 'functions/user/getUserWithToken'
-import { setLocalStorage } from 'functions/localStorage';
-import { setError, setSuccess, setWarning } from 'functions/setReply';
-import changeUserPassword from './../../functions/user/changeUserPassword';
+import { setLocalStorage, deleteLocalStorage } from 'functions/localStorage'
+import { setError, setSuccess, setWarning } from 'functions/setReply'
+import changeUserPassword from 'functions/user/changeUserPassword'
 
 export const authMachine = createMachine({
   id: 'authMachine',
@@ -130,12 +130,29 @@ export const authMachine = createMachine({
       }
     },    
 
+    signIngOut: {
+      invoke: {
+        onEntry: assign({ inProgress: true}),
+        id: 'signOut',
+        src: doSignout,
+        onDone: {
+          actions: [assign({ userInfo: {status: ''} }), (context) => console.log(context)],
+          target: 'finished'
+        },
+        exit: assign({ inProgress: false})
+      }
+    },
+
     finished: {
       entry: [assign({ inProgress: false}), assign({ appStarted: true })],
       on: {
         SIGN_IN: {
           target: 'gettingUserInfo',          
           cond: (context) => context.userInfo.status !== 'ok'
+        },
+
+        SIGN_OUT: {
+          target: 'signIngOut'
         }
       }
     },
@@ -220,6 +237,17 @@ async function doStoreToken(context, event) {
   } catch (error) {
     return setError(error)
   }
+}
+
+async function doSignout(context, event) {
+  deleteLocalStorage('token')
+
+  const userInfo = {
+    status: ''
+  }
+
+
+  console.log('aaa ', context)
 }
 
 // clear context
